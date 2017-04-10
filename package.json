@@ -1,0 +1,23 @@
+{
+  "name": "bamazon",
+  "version": "1.0.0",
+  "description": "an amazon like app using node and mysql",
+  "main": "bamazonCustomer.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/marcodarko/Bamazon.git"
+  },
+  "author": "marcodarko",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/marcodarko/Bamazon/issues"
+  },
+  "homepage": "https://github.com/marcodarko/Bamazon#readme",
+  "dependencies": {
+    "inquirer": "^3.0.6",
+    "mysql": "^2.13.0"
+  }
+}
