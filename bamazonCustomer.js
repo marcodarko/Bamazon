@@ -20,6 +20,9 @@ connection.connect(function(err) {
   
 });
 
+// global var to hold user's total
+var total = 0;
+
 
 
 var runSearch = function() {
@@ -41,7 +44,24 @@ var runSearch = function() {
   	var item = answer.itemPicked;
   	var quantity = answer.howMany;
 
-  	processOrder(item, quantity);
+    var query = "SELECT * FROM products WHERE ?";
+
+    connection.query(query,{ itemID : item }, function(err, res) {
+
+      if (res.stockQuantity >= quantity){
+
+        processOrder(item, quantity);
+
+      }
+      else{
+
+      console.log("Sorry, there's not enough inventory to complete your request");
+      runSearch();
+
+      }
+
+    
+    });
 
   });
 };
@@ -49,12 +69,56 @@ var runSearch = function() {
 
 function processOrder(item, quantity){
 
+    var query = "SELECT * FROM products WHERE ?";
 
+    connection.query(query,{ itemID : item }, function(err, res) {
+      
+      var pricePerItem = res.price;
+      var newQuantity = res.stockQuantity- quantity;
 
+      total =+ pricePerItem *quantity;
+
+      updateCart(total);
+
+      updateInventory(item, newQuantity);
+
+    });
 };
 
 
+function updateInventory(item, newQuantity){
 
+ var query = "UPDATE products SET ? WHERE ?";
+
+    connection.query(query,[{stockQuantity: newQuantity },{ itemID : item }], function(err, res) {
+      console.log("items successfully updated from DB");
+    });
+};
+
+
+function updateCart(total){
+
+  inquirer.prompt(
+   {
+    type: "list",
+    name: "keepShopping",
+    message: "Would you like to keep shopping?",
+    choices: ["KEEP SHOPPING!", "CHECK OUT"]
+  }
+  ).then(function(answer){
+
+    if(answer.keepShopping === "KEEP SHOPPING!"){
+
+        runSearch();
+
+    }else{
+
+      console.log("YOUR TOTAL IS: $"+ total);
+      total = 0;
+    }
+
+  });
+};
 
 
 function displayInventory(){
