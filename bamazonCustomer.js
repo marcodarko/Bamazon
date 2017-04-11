@@ -30,7 +30,7 @@ var runSearch = function() {
 	// initial display of inventory
 	displayInventory();
 
-  inquirer.prompt(
+  inquirer.prompt([
   {
     name: "itemPicked",
     message: "Please pick an item to buy by ID#",
@@ -39,16 +39,21 @@ var runSearch = function() {
     name: "howMany",
     message: "How many would you like to add to your cart?",
   }
-  ).then(function(answer) {
+  ]).then(function(answer) {
 
   	var item = answer.itemPicked;
   	var quantity = answer.howMany;
 
-    var query = "SELECT * FROM products WHERE ?";
+    //console.log("I:"+item);
+    //console.log("Q:"+quantity);
+
+    var query = "SELECT stockQuantity FROM products WHERE ?";
 
     connection.query(query,{ itemID : item }, function(err, res) {
 
-      if (res.stockQuantity >= quantity){
+      console.log("In Stock:"+res[0].stockQuantity);
+
+      if (parseInt(res[0].stockQuantity) >= parseInt(quantity)){
 
         processOrder(item, quantity);
 
@@ -71,12 +76,17 @@ function processOrder(item, quantity){
 
     var query = "SELECT * FROM products WHERE ?";
 
+    item = parseInt(item);
+
     connection.query(query,{ itemID : item }, function(err, res) {
       
-      var pricePerItem = res.price;
-      var newQuantity = res.stockQuantity- quantity;
+      var pricePerItem = res[0].price;
+      var newQuantity = res[0].stockQuantity- quantity;
+      var totalAdded = pricePerItem *quantity;
 
-      total =+ pricePerItem *quantity;
+      console.log("ADDED TO CART- "+quantity+" "+res[0].productName+" ="+"$"+totalAdded);
+
+      total =+ totalAdded;
 
       updateCart(total);
 
@@ -91,6 +101,9 @@ function updateInventory(item, newQuantity){
  var query = "UPDATE products SET ? WHERE ?";
 
     connection.query(query,[{stockQuantity: newQuantity },{ itemID : item }], function(err, res) {
+
+    if(err) throw err;
+
       console.log("items successfully updated from DB");
     });
 };
@@ -115,6 +128,7 @@ function updateCart(total){
 
       console.log("YOUR TOTAL IS: $"+ total);
       total = 0;
+      return false;
     }
 
   });
@@ -122,19 +136,21 @@ function updateCart(total){
 
 
 function displayInventory(){
+
 	 var query = "SELECT * FROM products";
 
     connection.query(query, function(err, res) {
 
-    	console.log("*********************************");
+    	console.log("\n*********************************");
       	console.log("****** ITEMS AVAILABLE **********");
       	console.log("*********************************");
 
       for (var i = 0; i < res.length; i++) {
-		console.log( "ID #"res[i].itemID ": " + res[i].productName + " || Price: $" + res[i].price);
-      }
 
-      runSearch();
+		console.log("ID #"+res[i].itemID+": " + res[i].productName + " || Price: $" + res[i].price);
+
+      };
+
     });
 };
 
