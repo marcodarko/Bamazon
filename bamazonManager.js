@@ -51,7 +51,7 @@ var runSearch = function() {
 			break;
 
 			case "Add to inventory":
-			viewProducts();
+			addInventory();
 			break;
 
 			case "Add a new product":
@@ -173,6 +173,37 @@ function newProduct(){
 		});
 	
 	});
+};
+
+function addInventory(){
+
+	inquirer.prompt([
+	{
+		name: "managerItem",
+		message: "Which item would you like to add inventory to? (enter ID#)"
+	},
+	{
+		name: "managerInventory",
+		message: "How much inventory would you like to add?"
+	}
+	]).then(function(answer) {
+
+	var item = answer.managerItem;
+	var inventory = answer.managerInventory;
+
+	var query = "UPDATE products SET ? WHERE ?";
+
+		 connection.query(query,[{stockQuantity: inventory },{ itemID : item }],function(err, res) {
+
+		 	if(err) throw err;
+
+			 console.log("STOCK ADDED SUCCESSFULLY!");
+
+		  	keepGoing();
+
+		});
+	
+});
 };
 
 
