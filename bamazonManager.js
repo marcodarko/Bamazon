@@ -76,7 +76,7 @@ function viewProducts(){
    console.log("***********************************");
 
    for (var i = 0; i < res.length; i++) {
-    console.log("ID #"+res[i].itemID+": " + res[i].productName + " || Price: $" + res[i].price+ " || In Stock: $" + res[i].stockQuantity);
+    console.log("ID #"+res[i].itemID+": " + res[i].productName + " || Price: $" + res[i].price+ " || In Stock: " + res[i].stockQuantity);
   };
 
   keepGoing();
