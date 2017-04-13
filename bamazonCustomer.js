@@ -35,7 +35,7 @@ var runSearch = function() {
     name: "itemPicked",
     message: "Please pick an item to buy by ID#",
   },
-   {
+  {
     name: "howMany",
     message: "How many would you like to add to your cart?",
   }
@@ -60,12 +60,12 @@ var runSearch = function() {
       }
       else{
 
-      console.log("Sorry, there's not enough inventory to complete your request");
-      runSearch();
+        console.log("Sorry, there's not enough inventory to complete your request");
+        runSearch();
 
       }
 
-    
+      
     });
 
   });
@@ -74,25 +74,25 @@ var runSearch = function() {
 
 function processOrder(item, quantity){
 
-    var query = "SELECT * FROM products WHERE ?";
+  var query = "SELECT * FROM products WHERE ?";
 
-    item = parseInt(item);
+  item = parseInt(item);
 
-    connection.query(query,{ itemID : item }, function(err, res) {
-      
-      var pricePerItem = res[0].price;
-      var newQuantity = res[0].stockQuantity- quantity;
-      var totalAdded = pricePerItem *quantity;
+  connection.query(query,{ itemID : item }, function(err, res) {
+    
+    var pricePerItem = res[0].price;
+    var newQuantity = res[0].stockQuantity- quantity;
+    var totalAdded = pricePerItem *quantity;
 
-      console.log("ADDED TO CART- "+quantity+" "+res[0].productName+" ="+"$"+totalAdded);
+    console.log("ADDED TO CART- "+quantity+" "+res[0].productName+" ="+"$"+totalAdded);
 
-      total =+ totalAdded;
+    total =+ totalAdded;
 
-      updateCart(total);
+    updateCart(total);
 
-      updateInventory(item, newQuantity);
+    updateInventory(item, newQuantity);
 
-    });
+  });
 };
 
 
@@ -100,19 +100,19 @@ function updateInventory(item, newQuantity){
 
  var query = "UPDATE products SET ? WHERE ?";
 
-    connection.query(query,[{stockQuantity: newQuantity },{ itemID : item }], function(err, res) {
+ connection.query(query,[{stockQuantity: newQuantity },{ itemID : item }], function(err, res) {
 
-    if(err) throw err;
+  if(err) throw err;
 
-      console.log("items successfully updated from DB");
-    });
+  console.log("items successfully updated from DB");
+});
 };
 
 
 function updateCart(total){
 
   inquirer.prompt(
-   {
+  {
     type: "list",
     name: "keepShopping",
     message: "Would you like to keep shopping?",
@@ -122,7 +122,7 @@ function updateCart(total){
 
     if(answer.keepShopping === "KEEP SHOPPING!"){
 
-        runSearch();
+      runSearch();
 
     }else{
 
@@ -137,21 +137,21 @@ function updateCart(total){
 
 function displayInventory(){
 
-	 var query = "SELECT * FROM products";
+  var query = "SELECT * FROM products";
 
-    connection.query(query, function(err, res) {
+  connection.query(query, function(err, res) {
 
-    	console.log("\n*********************************");
-      	console.log("****** ITEMS AVAILABLE **********");
-      	console.log("*********************************");
+   console.log("\n*********************************");
+   console.log("****** ITEMS AVAILABLE **********");
+   console.log("*********************************");
 
-      for (var i = 0; i < res.length; i++) {
+   for (var i = 0; i < res.length; i++) {
 
-		console.log("ID #"+res[i].itemID+": " + res[i].productName + " || Price: $" + res[i].price);
+    console.log("ID #"+res[i].itemID+": " + res[i].productName + " || Price: $" + res[i].price);
 
-      };
+  };
 
-    });
+});
 };
 
 

@@ -11,7 +11,6 @@ CREATE TABLE `products` (
   PRIMARY KEY (`itemID`)
 );
 
-select * from `products`;
 
 INSERT INTO `products` VALUES 
 (1,"Macbook Pro","Electronics",900.50,10),
