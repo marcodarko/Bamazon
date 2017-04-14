@@ -58,13 +58,15 @@ var runSearch = function() {
     connection.query(query,{ itemID : item }, function(err, res) {
 
       console.log("In Stock:"+res[0].stockQuantity);
-
+      // if stock can support order then call the process order function which will 
+      // update the total 
       if (parseInt(res[0].stockQuantity) >= parseInt(quantity)){
 
         processOrder(item, quantity);
 
       }
       else{
+        // if stock is 0
 
         console.log("Sorry, there's not enough inventory to complete your request");
         runSearch();
@@ -77,7 +79,8 @@ var runSearch = function() {
   });
 };
 
-
+// this function gives the user the total and keeps track of the items added
+// it passes the total to the updateCart in case they want to checkout
 function processOrder(item, quantity){
 
   var query = "SELECT * FROM products WHERE ?";
@@ -87,21 +90,28 @@ function processOrder(item, quantity){
   connection.query(query,{ itemID : item }, function(err, res) {
     
     var pricePerItem = res[0].price;
+    // subtracts ordered quantity from stock
+    // new quantity is passed to updateInventory to update database
     var newQuantity = res[0].stockQuantity- quantity;
+    // gives user the total for items purchased
     var totalAdded = pricePerItem *quantity;
 
     console.log("ADDED TO CART- "+quantity+" "+res[0].productName+" ="+"$"+totalAdded);
 
+    // adds up total as you keep shopping
     total =+ totalAdded;
 
+    // asks if you want to keep shoppping or checkout
     updateCart(total);
 
+    // will update the DB with new quantity
     updateInventory(item, newQuantity);
 
   });
 };
 
-
+// takes the passed in new quantity minus the items purchased and updates 
+// the DB
 function updateInventory(item, newQuantity){
 
  var query = "UPDATE products SET ? WHERE ?";
@@ -114,7 +124,8 @@ function updateInventory(item, newQuantity){
 });
 };
 
-
+// if you want to keep shopping routes you to the main function otherwise
+// it gives you the total accumulated so far
 function updateCart(total){
 
   inquirer.prompt(
@@ -140,6 +151,8 @@ function updateCart(total){
   });
 };
 
+// grabs all the data from our DB table and we loop through 
+// the response to display all items
 
 function displayInventory(){
 

@@ -26,7 +26,8 @@ connection.connect(function(err) {
 // mysql.server restart # Restart MySQL server
 
 
-
+// the main function that points the command chosen to the appropiate
+// function that does what the user needs to do
 var runSearch = function() {
 
 
@@ -39,8 +40,10 @@ var runSearch = function() {
 	}
 	).then(function(answer) {
 
+// store the command from answer to a variable
 		var command = answer.managerCommand;
 
+// switch to the corresponding function
 		switch(command){
 			case "View products for sale":
 			viewProducts();
@@ -64,7 +67,8 @@ var runSearch = function() {
 };
 
 
-
+// query's the DB for the table products and * in it.
+// at the end it loops through the response to display all the content found
 function viewProducts(){
 
   var query = "SELECT * FROM products";
@@ -86,7 +90,7 @@ function viewProducts(){
 };
 
 
-
+// querys the database table for items with stock lower then the number you give it
 function viewLowInventory(){
 inquirer.prompt(
 	{
@@ -113,7 +117,8 @@ inquirer.prompt(
 	});
 };
 
-
+// all this does is ask the user if he would like to keep going or not
+// so operations don't have to stop once something is chosen, you can do more.
 function keepGoing(){
 
 	inquirer.prompt(
@@ -125,6 +130,7 @@ function keepGoing(){
 	var command = answer.managerCommand;
 
 	if (command === "yes"){
+		// runsearch is executed if they want to keep going
 		runSearch();
 	}else{
 		return false;
@@ -132,6 +138,8 @@ function keepGoing(){
 	});
 };
 
+
+// this function takes specific user input and creates a new row in our table
 
 function newProduct(){
 
@@ -159,7 +167,7 @@ function newProduct(){
 	var price = parseFloat(answer.price);
 	var stock = parseInt(answer.stock);
 
-
+//creates a new row with the user input
 		var query = "INSERT INTO products SET ?";
 
 		 connection.query(query,{productName: name, departmentName: department,price: price, stockQuantity: stock},function(err, res) {
@@ -174,6 +182,10 @@ function newProduct(){
 	
 	});
 };
+
+
+// this function lets you pick an item by ID and modify it's stock
+// in case it's low you can add more inventory to it
 
 function addInventory(){
 
