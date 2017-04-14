@@ -160,9 +160,9 @@ function newProduct(){
 	var stock = parseInt(answer.stock);
 
 
-		var query = "INSERT INTO products (productName, departmentName, price, stockQuantity) VALUES ?";
+		var query = "INSERT INTO products SET ?";
 
-		 connection.query(query,{name, department, price, stock},function(err, res) {
+		 connection.query(query,{productName: name, departmentName: department,price: price, stockQuantity: stock},function(err, res) {
 
 		 	if(err) throw err;
 

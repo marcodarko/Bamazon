@@ -28,3 +28,5 @@ As a **MANAGER** you can:
 ![addStock](images/addStock.png)
 
 4. **ADD A NEW PRODUCT** 
+
+![newProduct](images/newProduct.png)

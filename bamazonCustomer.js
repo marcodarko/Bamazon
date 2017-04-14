@@ -1,7 +1,13 @@
 var mysql = require('mysql');
 var inquirer = require('inquirer');
 
+// installs the required modules
+// if no directory specified that means the modules come with NODE
+
+
+// creates a connection to out mysql DB
 var connection = mysql.createConnection({
+  // local host is the same as 27.0.0.1
   host: "localhost",
   port: 3306,
 
